@@ -1,2 +1,2 @@
-# PolishCookieConsentUpdater.Net
-Aktualizator do rozszerzenia Polska Ciasteczkowa Zgoda dla Chromium
+# PolishCookieConsentUpdater
+Aktualizator do rozszerzenia Polska Ciasteczkowa Zgoda dla Chromium (do Windowsa)
