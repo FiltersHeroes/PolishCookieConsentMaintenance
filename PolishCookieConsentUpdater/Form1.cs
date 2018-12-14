@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.Net;
 using System.Windows.Forms;
 using System.IO;
+using System.Linq;
 using Ionic.Zip;
 using Octokit;
 using Newtonsoft.Json;
-using System.Reflection;
 
 namespace PolishCookieConsentUpdater
 {
@@ -15,13 +15,37 @@ namespace PolishCookieConsentUpdater
         public Form1()
         {
             InitializeComponent();
-            UpdateExt();
+            var fileTxt = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\install.txt";
+            if (File.Exists(fileTxt))
+            {
+                label1.Text = File.ReadAllText(fileTxt);
+            }
+            else
+            {
+                label1.Text = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Rozszerzenia\PolishCookieConsent");
+            }
+            progressBar.AutoSize = true;
         }
 
         WebClient webClient;
 
         string pathDownloadExt = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Downloads\PolishCookieConsent");
 
+        public string GetInstallPath()
+        {
+            var fileTxt = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\install.txt";
+            string pathInstallExt = "";
+            if (File.Exists(fileTxt))
+            {
+
+                pathInstallExt = File.ReadAllText(fileTxt);
+            }
+            else
+            {
+                pathInstallExt = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Rozszerzenia\PolishCookieConsent");
+            }
+            return pathInstallExt;
+        }
 
         public void DownloadFile(string urlAddress, string location)
         {
@@ -53,19 +77,9 @@ namespace PolishCookieConsentUpdater
             labelPerc.Text = "Pobrano: " + e.ProgressPercentage.ToString() + "%";
         }
 
+
         private void Completed(object sender, AsyncCompletedEventArgs e)
         {
-            var fileTxt = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\install.txt";
-            string pathInstallExt = "";
-            if (File.Exists(fileTxt))
-            {
-
-                pathInstallExt = File.ReadAllText(fileTxt);
-            }
-            else
-            {
-                pathInstallExt = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Rozszerzenia\PolishCookieConsent");
-            }
             if (e.Error != null)
             {
                 string error = e.Error.ToString();
@@ -83,7 +97,7 @@ namespace PolishCookieConsentUpdater
                 {
                     foreach (ZipEntry f in zip)
                     {
-                        f.Extract(pathInstallExt, ExtractExistingFileAction.OverwriteSilently);
+                        f.Extract(GetInstallPath(), ExtractExistingFileAction.OverwriteSilently);
                     }
                 }
                 Directory.Delete(pathDownloadExt, true);
@@ -98,23 +112,12 @@ namespace PolishCookieConsentUpdater
 
         public async void UpdateExt()
         {
-            var fileTxt = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) +@"\install.txt";
-            string pathInstallExt = "";
-            if (File.Exists(fileTxt))
-            {
-
-                pathInstallExt = File.ReadAllText(fileTxt);
-            }
-            else
-            {
-                pathInstallExt = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Rozszerzenia\PolishCookieConsent");
-            }
             var client = new GitHubClient(new ProductHeaderValue("my-cool-app"));
             var latestReleaseTag = (await client.Repository.Release.GetLatest("PolishFiltersTeam", "PolishCookieConsent")).TagName;
             var newVersion = new Version(latestReleaseTag.Replace("v", ""));
 
 
-            Manifest manifest = JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(pathInstallExt + @"\manifest.json"));
+            Manifest manifest = JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(GetInstallPath() + @"\manifest.json"));
             var oldVersion = new Version(manifest.version);
 
             if (newVersion > oldVersion)
@@ -133,5 +136,27 @@ namespace PolishCookieConsentUpdater
             UpdateExt();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            string[] passedInArgs = Environment.GetCommandLineArgs();
+
+            if (passedInArgs.Contains("/u"))
+            {
+                UpdateExt();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                string installPath = fbd.SelectedPath;
+                File.WriteAllText(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\install.txt", installPath);
+                label1.Text = installPath;
+            }
+
+        }
     }
 }
