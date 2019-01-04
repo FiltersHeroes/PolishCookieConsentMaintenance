@@ -4,9 +4,12 @@ using System.Net;
 using System.Windows.Forms;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using Ionic.Zip;
 using Octokit;
 using Newtonsoft.Json;
+using System.Speech.Synthesis;
+using Ookii.Dialogs.WinForms;
 
 namespace PolishCookieConsentUpdater
 {
@@ -15,30 +18,22 @@ namespace PolishCookieConsentUpdater
         public Form1()
         {
             InitializeComponent();
-            var fileTxt = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\install.txt";
-            if (File.Exists(fileTxt))
-            {
-                label1.Text = File.ReadAllText(fileTxt);
-            }
-            else
-            {
-                label1.Text = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Rozszerzenia\PolishCookieConsent");
-            }
-            progressBar.AutoSize = true;
+            label1.Text = GetInstallPath();
+            this.AutoSize = false;
         }
 
         WebClient webClient;
 
         string pathDownloadExt = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Downloads\PolishCookieConsent");
 
+        ResourceManager rm = new ResourceManager("PolishCookieConsentUpdater.Lang", typeof(Form1).Assembly);
+
         public string GetInstallPath()
         {
-            var fileTxt = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\install.txt";
             string pathInstallExt = "";
-            if (File.Exists(fileTxt))
+            if ((string)Properties.Settings.Default["pathInstallExt"] != "")
             {
-
-                pathInstallExt = File.ReadAllText(fileTxt);
+                pathInstallExt = (string)Properties.Settings.Default["pathInstallExt"];
             }
             else
             {
@@ -74,7 +69,7 @@ namespace PolishCookieConsentUpdater
             progressBar.Value = e.ProgressPercentage;
 
             // Show the percentage on our label.
-            labelPerc.Text = "Pobrano: " + e.ProgressPercentage.ToString() + "%";
+            labelPerc.Text = rm.GetString("downloaded") + ": " + e.ProgressPercentage.ToString() + "%";
         }
 
 
@@ -89,7 +84,7 @@ namespace PolishCookieConsentUpdater
 
             if (e.Cancelled == true)
             {
-                MessageBox.Show("Pobieranie zostało zatrzymane.");
+                MessageBox.Show(rm.GetString("canceledDownload"));
             }
             else
             {
@@ -101,7 +96,10 @@ namespace PolishCookieConsentUpdater
                     }
                 }
                 Directory.Delete(pathDownloadExt, true);
-                MessageBox.Show("Aktualizacja ukończona!");
+                SpeechSynthesizer synthesizer = new SpeechSynthesizer();
+                synthesizer.Volume = 100;
+                synthesizer.SpeakAsync(rm.GetString("completedUpdate"));
+                MessageBox.Show(rm.GetString("completedUpdate"));
             }
         }
 
@@ -116,7 +114,6 @@ namespace PolishCookieConsentUpdater
             var latestReleaseTag = (await client.Repository.Release.GetLatest("PolishFiltersTeam", "PolishCookieConsent")).TagName;
             var newVersion = new Version(latestReleaseTag.Replace("v", ""));
 
-
             Manifest manifest = JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(GetInstallPath() + @"\manifest.json"));
             var oldVersion = new Version(manifest.version);
 
@@ -127,7 +124,7 @@ namespace PolishCookieConsentUpdater
             }
             else
             {
-                MessageBox.Show("Aktualnie nie ma nowszej wersji rozszerzenia Polska Ciasteczkowa Zgoda.");
+                MessageBox.Show(rm.GetString("noNewerVersion"));
             }
         }
 
@@ -148,12 +145,13 @@ namespace PolishCookieConsentUpdater
 
         private void button2_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-
+            VistaFolderBrowserDialog fbd = new VistaFolderBrowserDialog();
+            
             if (fbd.ShowDialog() == DialogResult.OK)
             {
                 string installPath = fbd.SelectedPath;
-                File.WriteAllText(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\install.txt", installPath);
+                Properties.Settings.Default["pathInstallExt"] = installPath;
+                Properties.Settings.Default.Save();
                 label1.Text = installPath;
             }
 

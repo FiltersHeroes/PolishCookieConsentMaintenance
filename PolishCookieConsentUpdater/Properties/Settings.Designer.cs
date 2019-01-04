@@ -22,5 +22,17 @@ namespace PolishCookieConsentUpdater.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string pathInstallExt {
+            get {
+                return ((string)(this["pathInstallExt"]));
+            }
+            set {
+                this["pathInstallExt"] = value;
+            }
+        }
     }
 }
