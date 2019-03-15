@@ -17,7 +17,6 @@ Jak już wszystko uzyskasz, otwórz plik [PolishCookieConsentUpdater.pro](https:
 
 Ten program korzysta z otwartoźródłowego kodu następujących projektów (wg. kolejności alfabetycznej):
 
-- [QuaZIP](https://github.com/stachenov/quazip), który jest na licencji [LGPL](/other_licenses/QuaZIP_LICENSE.txt)
-- [Qt 5](https://github.com/qt/qt5) na licencji [GPL](/other_licenses/Qt_LICENSE.txt)
 - [OpenSSL](https://github.com/openssl/openssl), który jest na [podwójnej licencji](/other_licenses/OpenSSL_LICENSE.txt)
-
+- [Qt 5](https://github.com/qt/qt5) na licencji [GPL](/other_licenses/Qt_LICENSE.txt)
+- [QuaZIP](https://github.com/stachenov/quazip), który jest na licencji [LGPL](/other_licenses/QuaZIP_LICENSE.txt)
