@@ -31,19 +31,19 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
     QApplication::setApplicationVersion("1.3");
 
     QTranslator appTranslator;
-    appTranslator.load("pl", ":/translations");
-    a.installTranslator(&appTranslator);
+    appTranslator.load(QLocale::system().name(), ":/translations");
+    app.installTranslator(&appTranslator);
 
     QTranslator qtTranslator;
-    qtTranslator.load("qt_pl", QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    a.installTranslator(&qtTranslator);
+    qtTranslator.load("qtbase_" + QLocale::system().name(), QApplication::applicationDirPath() + "/translations");
+    app.installTranslator(&qtTranslator);
 
     Widget w;
     w.show();
 
-    return a.exec();
+    return app.exec();
 }

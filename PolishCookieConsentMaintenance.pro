@@ -10,7 +10,7 @@ CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = PolishCookieConsentUpdater
+TARGET = PolishCookieConsentMaintenance
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -44,8 +44,8 @@ VERSION = 1.3
 RC_ICONS = icons/icon128.ico
 QMAKE_TARGET_COMPANY = "Polish Filters Team"
 QMAKE_TARGET_COPYRIGHT = "Copyright \\251 2019 Polish Filters Team"
-QMAKE_TARGET_DESCRIPTION = "Polish Cookie Consent Updater"
-QMAKE_TARGET_PRODUCT = "Polish Cookie Consent Updater"
+QMAKE_TARGET_DESCRIPTION = "Polish Cookie Consent Maintenance"
+QMAKE_TARGET_PRODUCT = "Polish Cookie Consent Maintenance"
 
 TRANSLATIONS = translations/pl.ts
 
@@ -53,6 +53,8 @@ win32:INCLUDEPATH += $$PWD/../3rdparty/quazip/include
 win32:LIBS += -L"$$PWD/../3rdparty/quazip/bin" -lquazip
 win32:LIBS += -L"$$PWD/../3rdparty/openssl/bin" -llibeay32
 win32:LIBS += -L"$$PWD/../3rdparty/openssl/bin" -lssleay32
+unix:INCLUDEPATH += /usr/include/quazip
+unix:LIBS += -L"/usr/lib/x86_64-linux-gnu" -lquazip
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

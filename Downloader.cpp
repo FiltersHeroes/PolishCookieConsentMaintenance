@@ -91,6 +91,8 @@ void Downloader::onReadyRead()
 
 void Downloader::onReply(QNetworkReply* reply)
 {
+    Widget widget;
+    auto updated = widget.GetUpdateMessage();
     // by completion of the request
     if (reply->error() == QNetworkReply::NoError)
     {
@@ -99,21 +101,18 @@ void Downloader::onReply(QNetworkReply* reply)
         m_file->close();
 
         // extract file
-        Widget widget;
         JlCompress::extractDir(widget.pathDownloadExt+"/PolishCookieConsent_chromium.zip", widget.GetInstallPath());
 
         // cleanup
         QDir(widget.pathDownloadExt).removeRecursively();
 
         // voice message
-        auto updated = tr("Polish Cookie Consent extension has been updated!");
         m_speech = new QTextToSpeech(this);
         m_speech -> setVolume(100.0);
         m_speech -> say(updated);
 
         // text message
         QMessageBox::information(nullptr, tr("Info"), updated);
-
     }
     else
     {

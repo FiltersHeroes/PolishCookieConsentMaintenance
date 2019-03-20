@@ -38,9 +38,22 @@
 #include <JlCompress.h>
 #include <QTranslator>
 
+QString Widget::GetUpdateMessage() {
+     QFile file(GetInstallPath()+"/manifest.json");
+     QString updated;
+     if(file.exists())
+     {
+         updated = tr("Polish Cookie Consent extension has been updated!");
+     }
+     else {
+         updated = tr("Polish Cookie Consent extension has been downloaded and extracted!");
+     }
+     return updated;
+}
+
 QString Widget::GetInstallPath()
 {
-    QSettings settings("PolishFiltersTeam", "PolishCookieConsentUpdater");
+    QSettings settings("PolishFiltersTeam", "PolishCookieConsentMaintenance");
     QString pathInstallExt = "";
     if (settings.contains("pathInstallExt")) {
         pathInstallExt = settings.value("pathInstallExt").toString();
@@ -75,7 +88,6 @@ void Widget::onSuccessfulGetRequest(QNetworkReply *replyR) {
     auto latestReleaseTag = json_map["tag_name"].toString();
     auto newVersion = QVersionNumber::fromString(latestReleaseTag.replace("v", ""));
     replyR->deleteLater();
-
     QFile file(GetInstallPath()+"/manifest.json");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QString json_file;
@@ -107,6 +119,13 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->changePathLbl->setText(GetInstallPath());
+
+    QFile file(GetInstallPath()+"/manifest.json");
+
+    if (!file.exists())
+    {
+        ui->downloadPushButton->setText(tr("Download and extract"));
+    }
 
     QStringList args = QCoreApplication::arguments();
     if(args.contains("/u"))
@@ -151,8 +170,15 @@ void Widget::on_changePathButton_clicked()
     if (result)
     {
         QString installPath = fd->selectedFiles()[0];
-        QSettings settings("PolishFiltersTeam", "PolishCookieConsentUpdater");
+        QSettings settings("PolishFiltersTeam", "PolishCookieConsentMaintenance");
         settings.setValue("pathInstallExt", installPath);
         ui->changePathLbl->setText(installPath);
+        QFile file(GetInstallPath()+"/manifest.json");
+        if (file.exists()) {
+            ui->downloadPushButton->setText(tr("Update"));
+        }
+        else {
+            ui->downloadPushButton->setText(tr("Download and extract"));
+        }
     }
 }

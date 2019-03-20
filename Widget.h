@@ -46,6 +46,7 @@ class Widget : public QWidget
 
 public:
     QString GetInstallPath();
+    QString GetUpdateMessage();
     QString pathDownloadExt = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)+"/PolishCookieConsent";
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();

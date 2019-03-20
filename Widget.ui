@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Polish Cookie Consent Updater</string>
+   <string>Polish Cookie Consent Maintenance</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
