@@ -1,5 +1,5 @@
 # PolishCookieConsentMaintenance
-Konserwator do rozszerzenia Polska Ciasteczkowa Zgoda dla Chromium („instaluje" i aktualizuje).
+Konserwator do rozszerzenia Polska Ciasteczkowa Zgoda dla Chromium (*instaluje* i aktualizuje).
 
 ## Budowanie
 
@@ -11,7 +11,7 @@ Aby skompilować ten program, musisz mieć:
 
 - bibliotekę QuaZIP, którą możesz skompilować wg. instrukcji z [stachenov.github.io/quazip/](https://stachenov.github.io/quazip/), a jeśli masz Windowsa, możesz skorzystać z instrukcji dostępnych na [www.antonioborondo.com/zipping-and-unzipping-files-with-qt/](https://www.antonioborondo.com/zipping-and-unzipping-files-with-qt/).
 
-W przypadku posiadania Windowsa musisz skopiować quazip.dll do katalogu 3rdparty/quazip/bin, który powinien znajdować się wyżej niż katalog z kodem źródłowym oraz libeay32 i ssleay32 do 3rdparty/openssl/bin, a następnie wszystkie pliki nagłówkowe quazip z rozszerzeniem h do 3rdparty/quazip/include.
+W przypadku posiadania Windowsa musisz skopiować **quazip.dll** do katalogu **3rdparty/quazip/bin**, który powinien znajdować się wyżej niż katalog z kodem źródłowym oraz **libeay32.dll** i **ssleay32.dll** do **3rdparty/openssl/bin**, a następnie **wszystkie pliki nagłówkowe quazip** z rozszerzeniem **h** do **3rdparty/quazip/include**.
 
 Jak już wszystko uzyskasz, to otwórz plik [PolishCookieConsentUpdater.pro](https://raw.githubusercontent.com/PolishFiltersTeam/PolishCookieConsentUpdater/master/PolishCookieConsentUpdater.pro) w programie Qt Creator i kliknij na ikonę trójkąta w celu kompilacji i uruchomienia.
 

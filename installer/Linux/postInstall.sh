@@ -70,9 +70,8 @@ EOF
 sudo mv /tmp/update_PolishCookieConsent_chromium /etc/cron.weekly/
 sudo chmod +x /etc/cron.weekly/update_PolishCookieConsent_chromium
 break;;
-$No ) exit 0; break;;
+$No ) break;;
 esac
 done
 
 rm -r $USER_PWD/PolishCookieConsentMaintenance/postInstall.sh
-
